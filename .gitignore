@@ -4,3 +4,7 @@
 .settings/org.eclipse.cdt.codan.core.prefs
 *.prefs
 .cproject
+/Debug/
+.autotools
+*.hpp
+/Release/

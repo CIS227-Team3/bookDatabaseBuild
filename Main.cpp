@@ -30,6 +30,9 @@ int main() {
 			case 4:
 				randomQuantities();
 				break;
+			case 5:
+				randomDateTime();
+				break;
 			default:
 				cout << "Not a recognized command. Please enter a valid menu option." << endl;
 				break;

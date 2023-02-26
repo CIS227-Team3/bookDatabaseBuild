@@ -1,9 +1,12 @@
 /*
  * menuOptions.h
  *
- *  Created on: Jan 30, 2023
- *      Author: Group 3
+ *  Created on: Feb 19, 2023
+ *      Author: roger
  */
+
+#ifndef MENUOPTIONS_H_
+#define MENUOPTIONS_H_
 
 #include <iostream>
 #include <iomanip>
@@ -13,22 +16,10 @@ using namespace std;
 
 short int promptUserInput();
 
-short int menuOptions();
-
-void displayUserOptions();
-
-void displayAdminOptions();
+short int showMenuOptions();
 
 void printAndClearError();
 
 short validateMenuOption();
 
-unsigned short int validateYear();
-
-float validatePrice();
-
-unsigned int validateQuantity();
-
-// void inventoryManagementOptions(BookstoreInventory &inventory);
-
-// void adminMenu(UserDatabase &users);
+#endif /* MENUOPTIONS_H_ */

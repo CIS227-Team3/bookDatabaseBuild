@@ -1,31 +1,39 @@
 /*
- * readFile.h
+ * fileOperations.h
  *
- *  Created on: Jan 25, 2023
- *      Author: Group 3
+ *  Created on: Feb 16, 2023
+ *      Author: roger
  */
 
-#ifndef READFILE_H_
-#define READFILE_H_
-
+#include <iostream>
+#include <string>
 #include "includes/rapidcsv.h"
 #include "includes/json.hpp"
 #include "includes/sqlite3.h"
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
-#include <iostream>
+
+#include "Book.h"
+
 #include <fstream>
 #include <list>
-#include "BookstoreInventory.h"
-#include "UserDatabase.h"
+#include <deque>
+#include <chrono>
 
 using namespace std;
 
-void exportUserListToCsv(User &user);
+#ifndef FILEOPERATIONS_H_
+#define FILEOPERATIONS_H_
 
-void writeBooksFile(deque<Book> &UserList);
 
-void readBookFile(BookstoreInventory &inventoryObject, string filePath);
+void readBooksFile();
+float generatePrice();
+void addPrices();
+int getNumRows(string filename);
+deque<string> getTableRows(string filename);
+void removeDuplicates();
+unsigned short int generateQuantity();
+void randomQuantities();
 
-void readUsersFile(UserDatabase &users, string filePath);
-
-#endif /* READFILE_H_ */
+#endif /* FILEOPERATIONS_H_ */

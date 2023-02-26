@@ -1,44 +1,25 @@
 /*
  * menuOptions.cpp
  *
- *  Created on: Jan 30, 2023
- *      Author: Group 3
+ *  Created on: Feb 19, 2023
+ *      Author: roger
  */
+
 
 #include "menuOptions.h"
 
-short int promptUserInput() {
+short int showMenuOptions() {
     short int userInput;
 
     // prompts user to enter command
-    cout << "Please enter 1 to enter a different title or 0 to exit the program" << endl;
+    cout << "Press 0 to exit application." << endl;
+	cout << "1. To create a new books database." << endl;
+	cout << "2. To add random prices to items in an existing database." << endl;
+	cout << "3. To remove duplicate database entries." << endl;
+	cout << "4. To add randomized quantities to books database entries." << endl;
     userInput = validateMenuOption();
 
     return userInput;
-}
-
-void displayUserOptions() {
-    cout << endl << endl << "Press 0 to exit this menu." << endl;
-    cout << "Press 1 to bring up this menu again." << endl;
-    cout << "Press 2 to search for a book." << endl;
-    cout << "Press 3 to add a book to inventory." << endl;
-    cout << "Press 4 to delete a book from inventory." << endl;
-    cout << "Press 5 to add a description/plot and genre." << endl;
-    cout << "Press 6 to add a book to your personal list." << endl;
-    cout << "Press 7 to print your personal list." << endl;
-    cout << "Press 8 to export the personal as CSV." << endl;
-    cout << "Press 9 to add a book to your cart." << endl;
-    cout << "Press 10 to view your cart." << endl;
-    cout << "Press 11 to save your cart." << endl;
-
-}
-
-void displayAdminOptions() {
-    cout << endl << "-----ADMIN ONLY-----" << endl;
-    cout << "Press 12 to add a user." << endl;
-    cout << "Press 13 to change a users password." << endl;
-    cout << "Press 14 to import book file." << endl;
-    cout << "Press 15 to import user file." << endl;
 }
 
 void printAndClearError() {
@@ -62,41 +43,3 @@ short int validateMenuOption() {
     }
 }
 
-unsigned short int validateYear() {
-    unsigned short int year;
-
-    while (true) {
-        if (std::cin >> year) {
-            cin.ignore(1000, '\n');
-            return year;
-        } else {
-            printAndClearError();
-        }
-    }
-}
-
-float validatePrice() {
-    float msrp;
-
-    while (true) {
-        if (std::cin >> msrp) {
-            cin.ignore(1000, '\n');
-            return msrp;
-        } else {
-            printAndClearError();
-        }
-    }
-}
-
-unsigned int validateQuantity() {
-    unsigned int quantity;
-
-    while (true) {
-        if (std::cin >> quantity) {
-            cin.ignore(1000, '\n');
-            return quantity;
-        } else {
-            printAndClearError();
-        }
-    }
-}

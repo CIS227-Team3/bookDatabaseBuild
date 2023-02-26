@@ -39,9 +39,63 @@ unsigned short int generateQuantity() {
 	return dist(randNumGen);
 	*/
 
+	srand(time(NULL));
 	randomQuantity = (rand() % 55) + 2;
 
 	return randomQuantity;
+}
+
+string generateRandomDate() {
+	unsigned short int hour;
+	unsigned short int minute;
+	unsigned short int second;
+	unsigned short int day;
+	unsigned short int month;
+	unsigned short int year;
+
+	string dateTime;
+
+	hour = (rand() % 12) + 1; // gets a random number between 1 and 12
+	minute = (rand() % 60); // gets a random number between 0 and 59
+	second = (rand() % 60); // gets a random number between 0 and 59
+
+	month = (rand() % 12) + 1; // gets a random number between 1 and 12
+	year = (rand() % 24) + 2000; // gets a random year between 2000 and 2023
+
+	switch (month) {
+	case 1:
+	case 3:
+	case 5:
+	case 7:
+	case 8:
+	case 10:
+	case 12:
+		day = (rand() % 31) + 1; // creates a random number between 1 and 31
+		break;
+	case 4:
+	case 6:
+	case 9:
+	case 11:
+		day = (rand() % 30) + 1; // creates a random number between 1 and 30
+		break;
+	case 2:
+		if (year % 400 == 0) { // leap year
+			day = (rand() % 29) + 1; // creates a random number between 1 and 29
+		}
+
+		else { // non-leap year
+			day = (rand() % 28) + 1; // creates a random number between 1 and 28
+		}
+		break;
+
+	}
+
+	boost::gregorian::date randomDate(year, month, day); // sets the date to the random numbers generated for year, month, and day
+	time_duration randomTime(hour, minute, second); // sets the time to the random numbers generated for hour, minute, and second
+	boost::posix_time::ptime randomDateAdded(randomDate, randomTime); // creates time object
+
+	dateTime = to_iso_extended_string(randomDateAdded);
+	return dateTime;
 }
 
 int getNumRows(string filename) {
@@ -56,7 +110,6 @@ int getNumRows(string filename) {
 			// gets the number of rows in the database
 			// checks that database opened successfully
 			if (sqlite3_open(file, &bookDB) == SQLITE_OK) {
-				cout << "Database opened successfully" << endl;
 
 				// instantiates statement object
 				sqlite3_stmt *rowCount;
@@ -103,7 +156,6 @@ deque<string> getTableRows(string filename) {
 				row = (const char*)sqlite3_column_text(select, 0);
 				isbnRows.push_back(row);
 			}
-
 
 			// sql statement destructor
 			sqlite3_finalize(select);
@@ -383,3 +435,70 @@ void addPrices() {
 	cout << "Price update complete." << endl;
 }
 
+void addDateTimeColumn(string filename) {
+
+	const char* file = filename.c_str();
+	string addColQuery = "ALTER TABLE books ADD COLUMN dateAdded TEXT";
+
+	sqlite3* booksDB;
+
+	try {
+		if (sqlite3_open(file, &booksDB) == SQLITE_OK) {
+			sqlite3_stmt *addCol = NULL;
+			if (sqlite3_prepare_v2(booksDB, addColQuery.c_str(), addColQuery.length(), &addCol, nullptr) == SQLITE_OK) {
+				sqlite3_step(addCol);
+				cout << "dateAdded column successfully added to " << filename << endl;
+			}
+			sqlite3_finalize(addCol);
+		}
+	}
+
+	catch (...) {
+		cout << "Error adding dateAdded column to database." << endl;
+	}
+
+	sqlite3_close(booksDB);
+}
+
+void randomDateTime() {
+	string filename;
+	cout << "Please enter the name of the file you would like to add a dateAdded column and randomized entries to: " << endl;
+	cin >> filename;
+
+	addDateTimeColumn(filename);
+	string randomDate;
+	unsigned int numRows = getNumRows(filename);
+	deque<string> isbns = getTableRows(filename);
+	string isbn;
+
+	const char* file = filename.c_str();
+	string updateQuery = "UPDATE books SET dateAdded = ? WHERE isbn = ?";
+
+	sqlite3 *booksDB;
+	try {
+		if (sqlite3_open(file, &booksDB) == SQLITE_OK) {
+			sqlite3_stmt *update;
+			if (sqlite3_prepare_v2(booksDB, updateQuery.c_str(), updateQuery.length(), &update, nullptr) == SQLITE_OK) {
+				for (unsigned int i = 0; i < numRows; ++i) {
+					randomDate = generateRandomDate();
+					isbn = isbns.at(i);
+
+					sqlite3_bind_text(update, 1, randomDate.c_str(), randomDate.length(), NULL);
+					sqlite3_bind_text(update, 2, isbn.c_str(), isbn.length(), NULL);
+
+					sqlite3_step(update);
+					sqlite3_reset(update);
+
+					cout << "ISBN: " << isbn << " Date generated: " << randomDate << ". Records remaining: " << numRows - i << endl;
+				}
+			}
+			sqlite3_finalize(update);
+		}
+	}
+
+	catch(...) {
+		cout << "Error adding randomized time entries to " << filename << endl;
+	}
+
+	sqlite3_close(booksDB);
+}

@@ -17,6 +17,7 @@ short int showMenuOptions() {
 	cout << "2. To add random prices to items in an existing database." << endl;
 	cout << "3. To remove duplicate database entries." << endl;
 	cout << "4. To add randomized quantities to books database entries." << endl;
+	cout << "5. To add randomized dateAdded column and entries to books database." << endl;
     userInput = validateMenuOption();
 
     return userInput;

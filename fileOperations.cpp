@@ -79,7 +79,7 @@ string generateRandomDate() {
 		day = (rand() % 30) + 1; // creates a random number between 1 and 30
 		break;
 	case 2:
-		if (year % 400 == 0) { // leap year
+		if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)) { // leap year
 			day = (rand() % 29) + 1; // creates a random number between 1 and 29
 		}
 
@@ -90,11 +90,27 @@ string generateRandomDate() {
 
 	}
 
+	// reference https://www.boost.org/doc/libs/1_55_0/doc/html/date_time/posix_time.html#date_time.posix_time.time_duration
 	boost::gregorian::date randomDate(year, month, day); // sets the date to the random numbers generated for year, month, and day
-	time_duration randomTime(hour, minute, second); // sets the time to the random numbers generated for hour, minute, and second
-	boost::posix_time::ptime randomDateAdded(randomDate, randomTime); // creates time object
 
-	dateTime = to_iso_extended_string(randomDateAdded);
+	// reference: https://thispointer.com/get-current-date-time-in-c-example-using-boost-date-time-library/
+	boost::posix_time::ptime timeLocal = boost::posix_time::second_clock::local_time();
+	boost::gregorian::date currentDate = timeLocal.date();
+
+	if (randomDate > currentDate) {
+		month = 1;
+		boost::gregorian::date randomDate(year, month, day);
+		time_duration randomTime(hour, minute, second); // sets the time to the random numbers generated for hour, minute, and second
+		boost::posix_time::ptime randomDateAdded(randomDate, randomTime); // creates time object
+		dateTime = to_iso_extended_string(randomDateAdded);
+	}
+
+	else {
+		time_duration randomTime(hour, minute, second); // sets the time to the random numbers generated for hour, minute, and second
+		boost::posix_time::ptime randomDateAdded(randomDate, randomTime); // creates time object
+		dateTime = to_iso_extended_string(randomDateAdded);
+	}
+
 	return dateTime;
 }
 
